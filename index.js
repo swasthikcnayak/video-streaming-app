@@ -1,9 +1,10 @@
 const express = require("express");
-let bodyParser = require("body-parser");
-let cors = require("cors");
+const bodyParser = require("body-parser");
+const cors = require("cors");
 const logger = require("morgan");
 const dotenv = require("dotenv");
-let compression = require("compression");
+const compression = require("compression");
+const authRoute = require("./routes/auth");
 
 const app = express();
 
@@ -14,14 +15,10 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(logger("combined"));
 app.use(compression());
+
 const db = require("./models");
-
-const mongoConnectOptions = {
-  useNewUrlParser: true,
-};
-
 db.mongoose
-  .connect(process.env.MONGO_URI, mongoConnectOptions)
+  .connect(process.env.MONGO_URI)
   .then(() => {
     console.log("Successfully connect to MongoDB.");
   })
@@ -29,6 +26,17 @@ db.mongoose
     console.error("Connection error", err);
     process.exit();
   });
+
+app.use(async (req, res, next) => {
+  res.header(
+    "Access-Control-Allow-Headers",
+    "x-access-token, Origin, Content-Type, Accept"
+  );
+  next();
+});
+
+// ROUTES
+app.use("/api/v1/auth", authRoute);
 
 // Listen
 const PORT = process.env.PORT;
