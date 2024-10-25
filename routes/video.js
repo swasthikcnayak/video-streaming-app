@@ -1,7 +1,7 @@
 const { checkSchema } = require("express-validator");
 const { verifyToken } = require("../middlewares/authMiddleware");
 const { videoUploadValidator } = require("../validators/videoValidator");
-const { uploadVideo, getVideoItems } = require("../controller/videoController");
+const { uploadVideo, getVideoItems, getVideoInfo } = require("../controller/videoController");
 const { validationMiddleware } = require("../middlewares/validationMiddleware");
 const {
   generateVideoId,
@@ -24,5 +24,5 @@ router.post(
 );
 
 router.get("/", getVideoItems)
-// router.get("/:videoId", getVideoInfo)
+router.get("/:videoId", getVideoInfo)
 module.exports = router;

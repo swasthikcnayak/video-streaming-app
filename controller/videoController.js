@@ -47,4 +47,22 @@ const getVideoItems = async (req, res) => {
   return res.status(200).json(result);
 };
 
-module.exports = { uploadVideo, getVideoItems };
+const getVideoInfo = async (req, res) => {
+  const result = await Video.findOne({
+    videoId: req.params.videoId,
+    isActive: true,
+  }).select({
+    title: 1,
+    description: 1,
+    videoId: 1,
+    thumbnailUrl: 1,
+    videoUrl: 1,
+    _id: 0,
+  });
+  if (!result) {
+    res.status(404).send({ message: "not found" });
+  }
+  return res.status(200).json(result);
+};
+
+module.exports = { uploadVideo, getVideoItems, getVideoInfo };
