@@ -17,10 +17,12 @@ router.post(
     generateVideoId,
     multiUpload,
     checkSchema(videoUploadValidator),
-      validateFormData,
+    validateFormData,
     validationMiddleware,
   ],
   uploadVideo
 );
 
+// router.get("/", getVideoItems)
+// router.get("/:videoId", getVideoInfo)
 module.exports = router;
