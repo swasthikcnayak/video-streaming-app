@@ -47,35 +47,6 @@ let UserSchema = new Schema(
     avtarUrl: {
       type: String,
     },
-    video: [
-      {
-        type: Schema.Types.ObjectId,
-        ref: "VIDEO",
-      },
-    ],
-    searches: [
-      {
-        type: String,
-      },
-    ],
-    likedVideos: [
-      {
-        type: Schema.Types.ObjectId,
-        ref: "VIDEO",
-      },
-    ],
-    dislikedVideos: [
-      {
-        type: Schema.Types.ObjectId,
-        ref: "VIDEO",
-      },
-    ],
-    viewedVideos: [
-      {
-        type: Schema.Types.ObjectId,
-        ref: "VIDEO",
-      },
-    ],
   },
   { collection: "USER" }
 );

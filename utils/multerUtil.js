@@ -40,7 +40,8 @@ const storage = multer.diskStorage({
     else return cb(new Error("Invalid field name"), null);
   },
   filename: function (req, file, cb) {
-    cb(null, req.videoId);
+    console.log(file);
+    cb(null, req.videoId + "." + file.originalname.split(".").pop());
   },
 });
 
@@ -56,7 +57,7 @@ const uploader = multer({
       return cb(new Error("file is not allowed"));
     }
     cb(null, true);
-    },
+  },
 });
 
 const multiUpload = uploader.fields([
