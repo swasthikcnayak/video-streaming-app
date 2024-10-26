@@ -44,7 +44,7 @@ const signin = (req, res) => {
       }
 
       if (!user) {
-        return res.status(404).send({ message: "User Not found." });
+        return res.status(404).send({ message: "Invalid username/password" });
       }
 
       const passwordIsValid = bcrypt.compareSync(
@@ -62,7 +62,6 @@ const signin = (req, res) => {
         expiresIn: process.env.ACCESS_TOKEN_EXPIRY,
       });
       return res.status(200).send({
-        id: user._id,
         username: user.username,
         email: user.email,
         avtarUrl: user.avtarUrl,

@@ -3,6 +3,7 @@ const videoModel = require("../models/video.model");
 const Video = db.video;
 const { videoLocation, thumbnailLocation } = require("../utils/multerUtil");
 const fs = require("fs");
+const path = require("path");
 
 const uploadVideo = (req, res) => {
   const video = new Video({
@@ -66,9 +67,39 @@ const getVideoInfo = async (req, res) => {
   return res.status(200).json(result);
 };
 
+const getThumbnail = async (req, res) => {
+  const result = await Video.findOne({
+    videoId: req.params.videoId,
+    isActive: true,
+  }).select({
+    thumbnailUrl: 1,
+    _id: 0,
+  });
+  if (result == null) {
+    console.log("Here");
+    return res.status(404).send({ message: "not found" });
+  }
+  const filename = result.thumbnailUrl.split("/").pop();
+  console.log(__dirname);
+  const fileLocation = path.join(
+    __dirname,
+    "../uploads",
+    "thumbnails",
+    filename
+  );
+
+  return res.sendFile(fileLocation, (err) => {
+    if (err) {
+      return res.status(404).send("Image not found");
+    }
+  });
+};
+
 const streamVideo = async (req, res) => {
   const range = req.headers.range;
-  if (!range) res.status(400).send({ message: "range not defined" });
+  if (!range) {
+    return res.status(400).send({ message: "range not defined" });
+  }
   const result = await Video.findOne({
     videoId: req.params.videoId,
     isActive: true,
@@ -77,7 +108,7 @@ const streamVideo = async (req, res) => {
     _id: 0,
   });
   if (!result || !result.videoUrl) {
-    res.status(404).send({ message: "not found" });
+    return res.status(404).send({ message: "not found" });
   }
   const videoPath = result.videoUrl;
   const videoSize = fs.statSync(videoPath).size;
@@ -96,4 +127,10 @@ const streamVideo = async (req, res) => {
   const videoStream = fs.createReadStream(videoPath, { start, end });
   videoStream.pipe(res);
 };
-module.exports = { uploadVideo, getVideoItems, getVideoInfo, streamVideo };
+module.exports = {
+  uploadVideo,
+  getVideoItems,
+  getVideoInfo,
+  getThumbnail,
+  streamVideo,
+};
